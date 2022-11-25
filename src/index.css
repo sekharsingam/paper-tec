@@ -1,0 +1,9 @@
+body {
+  font-size: 16px !important;
+  line-height: 24px !important;
+  background-color: #f0f2f5 !important;
+}
+
+#paperTechRoot .ant-form-item-label > label {
+  font-size: 16px;
+}

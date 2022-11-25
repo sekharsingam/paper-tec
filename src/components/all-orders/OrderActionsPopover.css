@@ -1,0 +1,21 @@
+.menu-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 150px;
+}
+
+.menu-item {
+    cursor: pointer;
+    padding: 7px 15px;
+    border-bottom: 1px solid #ddd;
+    height: 40px;
+}
+
+.ant-popover-inner-content {
+    padding: 0 !important;
+}
+
+.menu-item:hover {
+    background-color: #ebf6ff;
+}
