@@ -56,7 +56,7 @@ export function AllOrders() {
             dataIndex: 'operation',
             render: (_: any, record: any) => (
                 <OrderActionsPopover data={record}
-                    onActionSelect={onOrderActionSelect} />
+                    onActionSelect={(actionName: string) => onOrderActionSelect(actionName, record)} />
             ),
         },
     ]
@@ -70,10 +70,10 @@ export function AllOrders() {
     }
 
 
-    const onOrderActionSelect = (actionName: string) => {
+    const onOrderActionSelect = (actionName: string, Order: any) => {
         switch (actionName) {
             case 'DELETE':
-                dispatch(deleteOrder())
+                dispatch(deleteOrder(Order.OrderId))
                 break;
             case 'EDIT':
                 setOpenUpdateOrderModal(true)

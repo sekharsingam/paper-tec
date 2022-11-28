@@ -1,5 +1,8 @@
-import { Button, Col, DatePicker, Form, Input, Row, Select, Typography } from "antd";
+import { Button, Col, DatePicker, Form, Input, InputNumber, Row, Select, Typography } from "antd";
+import moment from "moment";
 import { useState } from "react";
+import { createOrder } from "../../app/features/orders/ordersAPI";
+import { useAppDispatch } from "../../app/hooks";
 import { PAPER_SUPPLIER_OPTIONS, ROLL_SIZE_OPTIONS } from "../../utils/constants";
 
 interface OrderFormProps {
@@ -10,8 +13,13 @@ export function OrderForm({ submitBtnLabel = 'Create' }: OrderFormProps) {
 
     const [showSuccessResult, setSuccessResult] = useState(false);
 
+
+    const dispatch = useAppDispatch()
+
     const onCreateNewOrder = (values: any) => {
-        setSuccessResult(true)
+        console.log({...values, orderDate: moment(values.orderDate).format()})
+        dispatch(createOrder({...values, orderDate: moment(values.orderDate).format()}))
+        // setSuccessResult(true)
 
     }
 
@@ -48,7 +56,7 @@ export function OrderForm({ submitBtnLabel = 'Create' }: OrderFormProps) {
                         name="rollWeight"
                         rules={[{ required: true, message: 'Please input roll weight!' }]}
                     >
-                        <Input />
+                        <InputNumber />
                     </Form.Item>
 
                     <Form.Item
@@ -56,7 +64,7 @@ export function OrderForm({ submitBtnLabel = 'Create' }: OrderFormProps) {
                         name="rollSize"
                         rules={[{ required: true, message: 'Please input roll size!' }]}
                     >
-                        <Input />
+                        <InputNumber />
                     </Form.Item>
 
                     <Form.Item
