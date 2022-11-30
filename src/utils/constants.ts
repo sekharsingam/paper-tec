@@ -1,3 +1,4 @@
+export const DATE_FORMAT = 'YYYY-MM-DD';
 export const ROLL_SIZE_OPTIONS = [
     { label: 45, value: 45 },
     { label: 55, value: 55 },

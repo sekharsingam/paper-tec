@@ -1,26 +1,20 @@
 import { Button, Col, DatePicker, Form, Input, InputNumber, Row, Select, Typography } from "antd";
 import moment from "moment";
-import { useState } from "react";
-import { createOrder } from "../../app/features/orders/ordersAPI";
-import { useAppDispatch } from "../../app/hooks";
+import { useAppSelector } from "../../app/hooks";
 import { PAPER_SUPPLIER_OPTIONS, ROLL_SIZE_OPTIONS } from "../../utils/constants";
 
 interface OrderFormProps {
     submitBtnLabel?: string;
+    orderToEdit?: any;
+    onSubmit: (values: any) => void
 }
 
-export function OrderForm({ submitBtnLabel = 'Create' }: OrderFormProps) {
+export function OrderForm({ submitBtnLabel = 'Create', orderToEdit, onSubmit }: OrderFormProps) {
 
-    const [showSuccessResult, setSuccessResult] = useState(false);
+    const { createOrderCalling } = useAppSelector(state => state.order)
 
-
-    const dispatch = useAppDispatch()
-
-    const onCreateNewOrder = (values: any) => {
-        console.log({...values, orderDate: moment(values.orderDate).format()})
-        dispatch(createOrder({...values, orderDate: moment(values.orderDate).format()}))
-        // setSuccessResult(true)
-
+    const onFormSubmit = (values: any) => {
+        onSubmit(values)
     }
 
     return (
@@ -30,10 +24,18 @@ export function OrderForm({ submitBtnLabel = 'Create' }: OrderFormProps) {
                     name="basic"
                     labelCol={{ span: 6 }}
                     wrapperCol={{ span: 18 }}
-                    initialValues={{ size: 'large' }}
+                    initialValues={{
+                        size: 'large',
+                        // orderDate: orderToEdit?.orderDate,
+                        customerName: orderToEdit?.customerName,
+                        rollWeight: orderToEdit?.rollWeight,
+                        rollSize: orderToEdit?.rollSize,
+                        cupSize: orderToEdit?.cupSize,
+                        paperSupplier: orderToEdit?.paperSupplier,
+                    }}
                     autoComplete="off"
                     size="large"
-                    onFinish={onCreateNewOrder}
+                    onFinish={onFormSubmit}
                 >
                     <Form.Item
                         label="Order Date"
@@ -56,15 +58,16 @@ export function OrderForm({ submitBtnLabel = 'Create' }: OrderFormProps) {
                         name="rollWeight"
                         rules={[{ required: true, message: 'Please input roll weight!' }]}
                     >
-                        <InputNumber />
+                        <InputNumber style={{ width: '100%' }} />
                     </Form.Item>
 
                     <Form.Item
                         label="Roll Size"
                         name="rollSize"
+
                         rules={[{ required: true, message: 'Please input roll size!' }]}
                     >
-                        <InputNumber />
+                        <InputNumber style={{ width: '100%' }} />
                     </Form.Item>
 
                     <Form.Item
@@ -92,7 +95,7 @@ export function OrderForm({ submitBtnLabel = 'Create' }: OrderFormProps) {
                     </Form.Item>
 
                     <Form.Item wrapperCol={{ offset: 11, span: 13 }}>
-                        <Button style={{ width: 200 }} type="primary" htmlType="submit">
+                        <Button style={{ width: 200 }} type="primary" loading={createOrderCalling} htmlType="submit">
                             {submitBtnLabel}
                         </Button>
                     </Form.Item>

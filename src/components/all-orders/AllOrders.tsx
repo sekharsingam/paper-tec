@@ -1,7 +1,10 @@
-import { Button, Input, Modal, Table, Typography } from "antd";
+import { SyncOutlined } from '@ant-design/icons';
+import { Input, Modal, Row, Table, Typography } from "antd";
+import moment from "moment";
 import { useEffect, useState } from "react";
-import { getOrders, deleteOrder } from "../../app/features/orders/ordersAPI";
+import { getOrders, deleteOrder, updateOrder } from "../../app/features/orders/ordersAPI";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { DATE_FORMAT } from "../../utils/constants";
 import { OrderForm } from "../new-order/OrderForm";
 import { OrderActionsPopover } from "./OrderActionsPopover";
 
@@ -12,19 +15,35 @@ export function AllOrders() {
 
     const dispatch = useAppDispatch()
 
+    const [selectedOrderToEdit, setSelectedOrderToEdit] = useState<any>()
     const [openUpdateOrderModal, setOpenUpdateOrderModal] = useState(false)
 
-
     useEffect(() => {
-        dispatch(getOrders())
+        getOrdersData()
     }, [])
 
+    const getOrdersData = () => {
+        dispatch(getOrders())
+    }
+
+    const onSubmitUpdate = (values: any) => {
+        dispatch(updateOrder({
+            ...values,
+            orderDate: moment.utc(values.orderDate).format(DATE_FORMAT),
+            orderId: selectedOrderToEdit?.id
+        }))
+        setOpenUpdateOrderModal(false)
+    }
 
     const columns = [
         {
             title: 'Order Date',
             dataIndex: 'orderDate',
             key: 'orderDate',
+            render: (_: any, record: any) => {
+                const stillUtc = moment.utc(record.orderDate).toDate();
+                return <Typography.Text>{moment(stillUtc).local().format(DATE_FORMAT)}</Typography.Text>
+            }
         },
         {
             title: 'Customer Name',
@@ -69,13 +88,13 @@ export function AllOrders() {
         setOpenUpdateOrderModal(false)
     }
 
-
-    const onOrderActionSelect = (actionName: string, Order: any) => {
+    const onOrderActionSelect = (actionName: string, order: any) => {
         switch (actionName) {
             case 'DELETE':
-                dispatch(deleteOrder(Order.OrderId))
+                dispatch(deleteOrder(order.id))
                 break;
             case 'EDIT':
+                setSelectedOrderToEdit(order)
                 setOpenUpdateOrderModal(true)
                 break
             default:
@@ -86,7 +105,10 @@ export function AllOrders() {
 
     return (
         <div>
-            <Input placeholder="Search..." size='large' style={{ width: 350, marginBottom: 10, float: 'right' }} />
+            <Row justify='end'>
+                <SyncOutlined style={{ marginRight: 10, marginTop: 10, fontSize: 20, cursor: 'pointer' }} onClick={getOrdersData} />
+                <Input placeholder="Search..." size='large' style={{ width: 350, marginBottom: 10 }} />
+            </Row>
             <Table columns={columns} dataSource={orders} pagination={false} />
             {openUpdateOrderModal && <Modal
                 open={openUpdateOrderModal}
@@ -95,7 +117,10 @@ export function AllOrders() {
                 width={1000}
                 footer={null}
             >
-                <OrderForm submitBtnLabel={'Update'} />
+                <OrderForm
+                    submitBtnLabel={'Update'}
+                    orderToEdit={selectedOrderToEdit}
+                    onSubmit={onSubmitUpdate} />
             </Modal>}
         </div>
     )

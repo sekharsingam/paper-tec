@@ -12,31 +12,39 @@ export interface Order {
 
 interface OrderState {
     orders: Order[],
-    isLoading: boolean,
+    getOrdersCalling: boolean,
+    createOrderCalling: boolean;
 }
 
 
 const initialState: OrderState = {
     orders: [],
-    isLoading: false
+    getOrdersCalling: false,
+    createOrderCalling: false
 }
 
 export const ordersSlice = createSlice({
     name: 'order',
     initialState,
     reducers: {
-        getOrders: (state) => ({ ...state, isLoading: true }),
+        getOrders: (state) => ({ ...state, getOrdersCalling: true }),
         getOrdersDone: (state, action: PayloadAction<any>) => ({
             ...state,
             orders: action.payload,
-            isLoading: false
+            getOrdersCalling: false
         }),
+
+        createOrder:(state) => ({...state, createOrderCalling: true}),
+        createOrderDone: (state, action: PayloadAction<any>) => ({
+            ...state,
+            createOrderCalling: false
+        })
         
     },
 })
 
 // Action creators are generated for each case reducer function
-export const { getOrders, getOrdersDone } = ordersSlice.actions
+export const { getOrders, getOrdersDone, createOrder, createOrderDone } = ordersSlice.actions
 
 export default ordersSlice.reducer
 

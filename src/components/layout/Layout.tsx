@@ -17,12 +17,6 @@ import './layout.css';
 
 const menuItems: any = [
     {
-        key: 'newCustomer',
-        icon: <UserAddOutlined />,
-        label: 'New Customer',
-        pathname: '/newCustomer'
-    },
-    {
         key: 'allOrders',
         icon: <FileAddOutlined />,
         label: 'All Orders',
@@ -33,6 +27,12 @@ const menuItems: any = [
         icon: <FileAddOutlined />,
         label: 'New Order',
         pathname: '/newOrder',
+    },
+    {
+        key: 'newCustomer',
+        icon: <UserAddOutlined />,
+        label: 'New Customer',
+        pathname: '/newCustomer'
     },
     {
         key: 'editCustomer',
@@ -55,7 +55,6 @@ export default function LayoutContainer() {
     const { pathname } = useLocation()
 
     const onMenuItemSelected = (item: MenuInfo) => {
-        console.log(item)
         switch (item.key) {
             case 'newOrder':
                 navigate('newOrder')

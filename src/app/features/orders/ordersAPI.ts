@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ORDERS_DATA } from "../../../utils/constants";
+import { toast } from "react-toastify";
 import { AppDispatch } from "../../store";
 import { getOrdersDone } from "./ordersSlice";
 
@@ -14,22 +14,27 @@ interface OrderPayload {
 
 const API_END_POINT = 'http://localhost:8080'
 export const getOrders = () => async (dispatch: AppDispatch) => {
-    const response = await axios.get(`${API_END_POINT}/api/v1/orders/getorders`);
-    dispatch(getOrdersDone(ORDERS_DATA));
+    axios.get(`${API_END_POINT}/api/v1/orders/getorders`).then(response => {
+        dispatch(getOrdersDone(response.data));
+    });
 };
 
 export const createOrder = (orderPayload: OrderPayload) => async (dispatch: AppDispatch) => {
-    const response = await axios.post(`${API_END_POINT}/api/v1/orders/createorder`, orderPayload);
-    // dispatch(getOrdersDone(ORDERS_DATA));
-    console.log(response)
+    axios.post(`${API_END_POINT}/api/v1/orders/createorder`, orderPayload).then(response => {
+        toast.success('Order has been created successfully.')
+    });
 };
 
-export const updateOrder = () => async (dispatch: AppDispatch) => {
-    const response = await axios.get(`${API_END_POINT}/api/v1/orders/updateorder`);
-    dispatch(getOrdersDone(ORDERS_DATA));
+export const updateOrder = (orderPayload: OrderPayload) => async (dispatch: AppDispatch) => {
+    axios.put(`${API_END_POINT}/api/v1/orders/updateorder`, orderPayload).then(response => {
+        toast.success('Order has been updated successfully.')
+    });
 };
 
 export const deleteOrder = (orderId: string) => async (dispatch: AppDispatch) => {
-    const response = await axios.get(`${API_END_POINT}/api/v1/orders/deleteorder?orderId=${orderId}`);
-    dispatch(getOrdersDone(ORDERS_DATA));
+    axios.delete(`${API_END_POINT}/api/v1/orders/deleteorder?orderId=${orderId}`).then(response => {
+        toast.success('Order has been deleted successfully.')
+    }).catch(err => {
+        toast.error('Error while deleting the order')
+    });
 };

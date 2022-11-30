@@ -14,7 +14,7 @@ export default function Login() {
     const navigate = useNavigate()
 
     const onSubmit = () =>  {
-        navigate('/home')
+        navigate('/allOrders')
     }
 
     return (
